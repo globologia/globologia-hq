@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<title>GLOBOLOGÍA HQ</title>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&amp;family=Playfair+Display:wght@700;800;900&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0D2344;
+  --gold:#D8B24A;
+  --ink:#17233A;
+  --gray:#707683;
+  --border:#E1E3E8;
+  --white:#FFFFFF;
+  --rainbow:linear-gradient(90deg,#E43C2F 0%,#F3792B 15%,#F0C92B 30%,#52A852 45%,#149B96 58%,#2C76C1 72%,#5949B6 86%,#B03D87 100%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:#fff}
+body{margin:0;background:#fff;color:var(--ink);font-family:'Source Serif 4',Georgia,serif;min-height:100dvh}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:4px;background:var(--rainbow);z-index:999}
+
+#topbar{
+  position:sticky;top:0;z-index:100;background:rgba(255,255,255,.975);
+  border-bottom:1px solid #ECEDEF;box-shadow:0 5px 18px rgba(13,35,68,.045);
+  backdrop-filter:blur(12px);padding-top:4px;
+}
+#brandbar{max-width:760px;margin:0 auto;padding:9px 16px 3px;display:flex;align-items:center}
+#book-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-weight:800;letter-spacing:.11em;color:var(--navy);font-size:.84rem}
+#book-title img{width:29px;height:29px;object-fit:contain}
+#book-title small{font-family:'Inter',sans-serif;color:var(--gold);font-size:.56rem;letter-spacing:.16em;margin-left:4px}
+
+#searchbar-row{max-width:760px;margin:0 auto;padding:8px 14px 10px}
+#searchbar-wrap{position:relative}
+#searchbar-wrap::before{
+  content:"⌕";position:absolute;left:18px;top:50%;transform:translateY(-52%);
+  font-family:Georgia,serif;font-size:1.7rem;color:var(--navy);pointer-events:none;z-index:2;
+}
+#search-input{
+  width:100%;height:64px;border:2px solid #D7DAE1;border-radius:20px;background:#fff;
+  color:var(--navy);font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:600;
+  padding:0 46px 0 52px;outline:none;box-shadow:0 7px 22px rgba(13,35,68,.065);
+  transition:.18s ease;
+}
+#search-input::placeholder{color:#8A909B;font-weight:500}
+#search-input:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(13,35,68,.075),0 8px 24px rgba(13,35,68,.07)}
+#search-clear{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;
+  border-radius:50%;background:#F1F2F5;color:#6C7380;font-size:1.15rem;display:none;cursor:pointer
+}
+#search-results{
+  position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #DFE2E8;
+  border-radius:16px;box-shadow:0 16px 34px rgba(13,35,68,.14);overflow:hidden;max-height:55vh;
+  overflow-y:auto;display:none;z-index:200
+}
+#search-results.show{display:block}
+.sr-item{width:100%;border:0;border-bottom:1px solid #ECEEF2;background:#fff;padding:13px 15px;text-align:left;cursor:pointer;display:grid;gap:2px}
+.sr-item:last-child{border-bottom:0}
+.sr-item:hover{background:#FAFAFB}
+.sr-tab{font-family:'Inter',sans-serif;font-size:.61rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.sr-label{font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-size:.94rem}
+.sr-meta{font-family:'Inter',sans-serif;font-size:.72rem;color:#777E89}
+.sr-empty{padding:18px;text-align:center;font-family:'Inter',sans-serif;color:#858B94;font-size:.82rem}
+
+#topbar-inner{
+  max-width:760px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:0 14px 11px;
+  scrollbar-width:none;scroll-snap-type:x proximity
+}
+#topbar-inner::-webkit-scrollbar{display:none}
+.nbtn{
+  --tab:#0D2344;--tabsoft:#F3F5F8;flex:0 0 auto;scroll-snap-align:start;
+  border:1px solid #DADDE4;border-radius:999px;background:#fff;color:#4E596D;
+  font-family:'Inter',sans-serif;font-size:.72rem;font-weight:800;padding:9px 13px;line-height:1;
+  cursor:pointer;transition:.16s ease
+}
+.nbtn.on{background:var(--tabsoft);border-color:color-mix(in srgb,var(--tab) 42%,white);color:var(--tab)}
+.nbtn:hover{border-color:var(--tab);color:var(--tab)}
+
+#page{max-width:760px;margin:0 auto;padding:22px 14px 72px}
+.section{display:none;animation:fadein .22s ease}
+.section.active{display:block}
+@keyframes fadein{from{opacity:.15;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+#s-inicio{display:none}
+#s-inicio.active{display:block}
+.qgrid{display:grid;grid-template-columns:1fr;gap:14px;max-width:620px;margin:0 auto}
+.qcard{
+  --accent:#0D2344;--soft:#F5F6F8;position:relative;width:100%;min-height:96px;border:1px solid color-mix(in srgb,var(--accent) 24%,white);
+  border-radius:17px;background:var(--soft);padding:18px 60px 18px 18px;display:grid;
+  grid-template-columns:54px 1fr;align-items:center;gap:5px 10px;text-align:left;cursor:pointer;
+  box-shadow:0 4px 12px rgba(13,35,68,.03);transition:.17s ease;overflow:hidden
+}
+.qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent)}
+.qcard:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(13,35,68,.06)}
+.qnum{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:900;letter-spacing:.08em;color:var(--accent)}
+.qname{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:800;color:var(--navy)}
+.qarrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--accent);font-family:'Inter',sans-serif;font-size:1.3rem}
+
+.section-title-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:3px 1px 18px;padding-top:2px}
+.section-title-row::before{content:"";position:absolute}
+.ptag{
+  display:inline-block;font-family:'Inter',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--section);border-bottom:1px solid color-mix(in srgb,var(--section) 55%,white);
+  padding-bottom:5px;margin-bottom:9px
+}
+h1{margin:0;font-family:'Playfair Display',serif;font-size:clamp(1.85rem,8vw,2.5rem);line-height:1.03;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.upload-btn{
+  flex:0 0 auto;text-decoration:none;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:900;
+  padding:10px 12px;border-radius:12px;background:var(--sectionsoft);color:var(--section);
+  border:1px solid color-mix(in srgb,var(--section) 32%,white)
+}
+
+.asset-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.asset-card{border:1px solid #E1E4E9;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 6px 18px rgba(13,35,68,.045)}
+.preview-media{width:100%;border:0;background:#F8F8FA;padding:0;display:block;cursor:pointer}
+.preview-media img{display:block;width:100%;max-height:370px;object-fit:contain;background:#fff;padding:9px}
+.file-preview{min-height:150px;display:grid;place-items:center;background:linear-gradient(145deg,#FAFAFB,#F1F2F5);padding:22px}
+.file-badge{display:grid;place-items:center;width:74px;height:88px;border-radius:10px;background:#fff;border:1px solid #DBDEE5;box-shadow:0 5px 14px rgba(13,35,68,.06);font-family:'Inter',sans-serif;font-weight:900;color:var(--section);font-size:.8rem}
+.asset-info{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px}
+.asset-copy{min-width:0;display:grid;gap:3px}
+.asset-copy strong{font-family:'Playfair Display',serif;color:var(--navy);font-size:.96rem;line-height:1.2;word-break:break-word}
+.file-type{font-family:'Inter',sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.12em;color:var(--section);text-transform:uppercase}
+.asset-actions{display:flex;gap:7px;flex:0 0 auto}
+.grab-btn,.open-btn{
+  border:1px solid color-mix(in srgb,var(--section) 32%,white);border-radius:10px;background:var(--sectionsoft);
+  color:var(--section);font-family:'Inter',sans-serif;font-size:.68rem;font-weight:900;padding:9px 10px;
+  cursor:pointer;text-decoration:none
+}
+.grab-btn{background:var(--section);border-color:var(--section);color:#fff}
+.empty-state{
+  display:none;margin-top:4px;border:1px dashed #D8DBE2;border-radius:15px;padding:25px;text-align:center;
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;color:#8A9099;background:#FCFCFD
+}
+.loading-state{
+  margin-top:4px;border:1px solid #ECEEF2;border-radius:15px;padding:18px;text-align:center;
+  font-family:'Inter',sans-serif;font-size:.76rem;color:#8A9099;background:#FCFCFD
+}
+
+.modal{position:fixed;inset:0;z-index:1000;background:rgba(7,13,25,.88);display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.modal-card{position:relative;max-width:980px;width:100%;max-height:92dvh;display:flex;align-items:center;justify-content:center}
+.modal img{max-width:100%;max-height:86dvh;object-fit:contain;background:#fff;border-radius:14px}
+.modal-close{position:absolute;right:0;top:-45px;width:38px;height:38px;border:0;border-radius:50%;background:#fff;color:#111;font-size:1.25rem;cursor:pointer}
+
+@media(min-width:680px){
+  #page{padding:28px 20px 80px}
+  #searchbar-row,#topbar-inner,#brandbar{padding-left:20px;padding-right:20px}
+  .qgrid{grid-template-columns:1fr}
+  .asset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:420px){
+  #brandbar{padding-top:8px}
+  #searchbar-row{padding-left:11px;padding-right:11px}
+  #topbar-inner{padding-left:11px;padding-right:11px}
+  #page{padding-left:11px;padding-right:11px}
+  #search-input{height:62px;font-size:1rem}
+  .asset-info{align-items:flex-end}
+  .asset-actions{flex-direction:column}
+  .section-title-row{align-items:center}
+}
+</style>
+</head>
+<body>
+<div id="topbar">
+<div id="brandbar">
+<div id="book-title">
+<img alt="Símbolo de Globología" src="icon.svg"/>
+<span>GLOBOLOGÍA <small>HQ</small></span>
+</div>
+</div>
+<div id="searchbar-row">
+<div id="searchbar-wrap">
+<input autocomplete="off" id="search-input" onfocus="doSearch(this.value)" oninput="doSearch(this.value)" placeholder="Buscar archivos, PDFs, logos…" type="search"/>
+<button aria-label="Limpiar búsqueda" id="search-clear" onclick="clearSearch()" type="button">×</button>
+<div id="search-results"></div>
+</div>
+</div>
+<div id="topbar-inner">
+<button class="nbtn on" data-tab="inicio" onclick="go('inicio',this)" style="--tab:#0D2344;--tabsoft:#F2F4F7">Inicio</button>
+<button class="nbtn on" data-tab="libro" onclick="go('libro',this)" style="--tab:#E44B31;--tabsoft:#FFF1ED">Libro</button>
+<button class="nbtn" data-tab="impresion" onclick="go('impresion',this)" style="--tab:#C79612;--tabsoft:#FFF8DF">Impresión</button>
+<button class="nbtn" data-tab="legal" onclick="go('legal',this)" style="--tab:#6946A5;--tabsoft:#F5F0FF">Legal</button>
+<button class="nbtn" data-tab="marca" onclick="go('marca',this)" style="--tab:#C7447B;--tabsoft:#FFF0F7">Marca</button>
+<button class="nbtn" data-tab="marketing" onclick="go('marketing',this)" style="--tab:#319656;--tabsoft:#EEF9F1">Marketing</button>
+<button class="nbtn" data-tab="redes" onclick="go('redes',this)" style="--tab:#168B91;--tabsoft:#ECFAFA">Redes</button>
+</div>
+</div>
+<main id="page">
+<section class="section active" id="s-inicio">
+<div class="qgrid"><button class="qcard" onclick="jumpTo('libro')" style="--accent:#E44B31;--soft:#FFF1ED" type="button">
+<span class="qnum">01</span>
+<span class="qname">El Libro</span>
+<span class="qarrow">→</span>
+</button>
+<button class="qcard" onclick="jumpTo('impresion')" style="--accent:#C79612;--soft:#FFF8DF" type="button">
+<span class="qnum">02</span>
+<span class="qname">Impresión</span>
+<span class="qarrow">→</span>
+</button>
+<button class="qcard" onclick="jumpTo('legal')" style="--accent:#6946A5;--soft:#F5F0FF" type="button">
+<span class="qnum">03</span>
+<span class="qname">Legal</span>
+<span class="qarrow">→</span>
+</button>
+<button class="qcard" onclick="jumpTo('marca')" style="--accent:#C7447B;--soft:#FFF0F7" type="button">
+<span class="qnum">04</span>
+<span class="qname">Marca &amp; Lorenita</span>
+<span class="qarrow">→</span>
+</button>
+<button class="qcard" onclick="jumpTo('marketing')" style="--accent:#319656;--soft:#EEF9F1" type="button">
+<span class="qnum">05</span>
+<span class="qname">Marketing</span>
+<span class="qarrow">→</span>
+</button>
+<button class="qcard" onclick="jumpTo('redes')" style="--accent:#168B91;--soft:#ECFAFA" type="button">
+<span class="qnum">06</span>
+<span class="qname">Redes &amp; Plataformas</span>
+<span class="qarrow">→</span>
+</button></div>
+</section>
+<section class="section" data-section="libro" id="s-libro" style="--section:#E44B31;--sectionsoft:#FFF1ED">
+<div class="section-title-row">
+<div>
+<span class="ptag">Libro</span>
+<h1>El Libro</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/libro" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-libro">
+</div>
+<div class="empty-state" id="empty-libro">0 archivos</div>
+</section>
+<section class="section" data-section="impresion" id="s-impresion" style="--section:#C79612;--sectionsoft:#FFF8DF">
+<div class="section-title-row">
+<div>
+<span class="ptag">Impresión</span>
+<h1>Impresión</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/impresion" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-impresion">
+</div>
+<div class="empty-state" id="empty-impresion">0 archivos</div>
+</section>
+<section class="section" data-section="legal" id="s-legal" style="--section:#6946A5;--sectionsoft:#F5F0FF">
+<div class="section-title-row">
+<div>
+<span class="ptag">Legal</span>
+<h1>Legal</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/legal" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-legal">
+</div>
+<div class="empty-state" id="empty-legal">0 archivos</div>
+</section>
+<section class="section" data-section="marca" id="s-marca" style="--section:#C7447B;--sectionsoft:#FFF0F7">
+<div class="section-title-row">
+<div>
+<span class="ptag">Marca</span>
+<h1>Marca &amp; Lorenita</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marca" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-marca">
+</div>
+<div class="empty-state" id="empty-marca">0 archivos</div>
+</section>
+<section class="section" data-section="marketing" id="s-marketing" style="--section:#319656;--sectionsoft:#EEF9F1">
+<div class="section-title-row">
+<div>
+<span class="ptag">Marketing</span>
+<h1>Marketing</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marketing" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-marketing">
+</div>
+<div class="empty-state" id="empty-marketing">0 archivos</div>
+</section>
+<section class="section" data-section="redes" id="s-redes" style="--section:#168B91;--sectionsoft:#ECFAFA">
+<div class="section-title-row">
+<div>
+<span class="ptag">Redes</span>
+<h1>Redes &amp; Plataformas</h1>
+</div>
+<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/redes" rel="noopener" target="_blank">+ Subir</a>
+</div>
+<div class="asset-grid" id="assets-redes">
+</div>
+<div class="empty-state" id="empty-redes">0 archivos</div>
+</section>
+</main>
+<div class="modal" id="image-modal" onclick="closeImagePreview(event)">
+<div class="modal-card">
+<button class="modal-close" onclick="closeImagePreview(event)" type="button">×</button>
+<img alt="" id="modal-image"/>
+</div>
+</div>
+<script>
+const GH_OWNER = 'globologia';
+const GH_REPO = 'globologia-hq';
+const GH_BRANCH = 'main';
+const SECTION_NAMES = {"libro": "El Libro", "impresion": "Impresión", "legal": "Legal", "marca": "Marca & Lorenita", "marketing": "Marketing", "redes": "Redes & Plataformas"};
+const SECTION_COLORS = {"libro": "#E44B31", "impresion": "#C79612", "legal": "#6946A5", "marca": "#C7447B", "marketing": "#319656", "redes": "#168B91"};
+const SECTION_SOFT = {"libro": "#FFF1ED", "impresion": "#FFF8DF", "legal": "#F5F0FF", "marca": "#FFF0F7", "marketing": "#EEF9F1", "redes": "#ECFAFA"};
+
+let remoteAssets = [];
+let githubLoaded = false;
+
+function go(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('on'));
+  const sec = document.getElementById('s-' + id);
+  if(sec) sec.classList.add('active');
+  if(btn) btn.classList.add('on');
+  else {
+    const target = document.querySelector('.nbtn[data-tab="' + id + '"]');
+    if(target) target.classList.add('on');
+  }
+  history.replaceState(null,'', id === 'inicio' ? location.pathname : '#' + id);
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateEmptyStates();
+}
+
+function jumpTo(id) {
+  go(id, document.querySelector('.nbtn[data-tab="' + id + '"]'));
+  closeSearch();
+}
+
+function normalize(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+
+function builtInSearchItems() {
+  const items = [];
+  document.querySelectorAll('.builtin-asset').forEach(card => {
+    const section = card.dataset.section;
+    const label = card.querySelector('.asset-copy strong')?.textContent.trim() || 'Archivo';
+    const type = card.querySelector('.file-type')?.textContent.trim() || '';
+    items.push({section,label,type,kind:'asset'});
+  });
+  Object.keys(SECTION_NAMES).forEach(section => {
+    items.push({section,label:SECTION_NAMES[section],type:'Sección',kind:'section'});
+  });
+  return items;
+}
+
+function searchItems() {
+  return builtInSearchItems().concat(remoteAssets.map(a => ({
+    section:a.section,label:a.displayName,type:a.ext.toUpperCase(),kind:'asset'
+  })));
+}
+
+function doSearch(query) {
+  const q = normalize(query.trim());
+  const box = document.getElementById('search-results');
+  document.getElementById('search-clear').style.display = q ? 'block' : 'none';
+  if(!q) { closeSearch(); return; }
+  const matches = searchItems().filter(item => normalize(item.label + ' ' + item.type + ' ' + SECTION_NAMES[item.section]).includes(q)).slice(0,18);
+  if(!matches.length) {
+    box.innerHTML = '<div class="sr-empty">Sin resultados</div>';
+  } else {
+    box.innerHTML = matches.map(m => `
+      <button class="sr-item" type="button" onclick="jumpTo('${m.section}')" style="--accent:${SECTION_COLORS[m.section]}">
+        <span class="sr-tab">${SECTION_NAMES[m.section]}</span>
+        <span class="sr-label">${escapeHtml(m.label)}</span>
+        <span class="sr-meta">${escapeHtml(m.type)}</span>
+      </button>
+    `).join('');
+  }
+  box.classList.add('show');
+}
+
+function clearSearch() {
+  const input = document.getElementById('search-input');
+  input.value = '';
+  input.focus();
+  document.getElementById('search-clear').style.display = 'none';
+  closeSearch();
+}
+function closeSearch() {
+  const box = document.getElementById('search-results');
+  box.classList.remove('show');
+  box.innerHTML = '';
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('searchbar-wrap');
+  if(wrap && !wrap.contains(e.target)) closeSearch();
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[c]);
+}
+
+function displayNameFromPath(path) {
+  const base = path.split('/').pop().replace(/\.[^.]+$/, '');
+  return base.replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function extFromPath(path) {
+  const m = path.match(/\.([^.\/]+)$/);
+  return m ? m[1].toLowerCase() : 'file';
+}
+function rawUrl(path) {
+  return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${encodeURI(path)}`;
+}
+function githubViewUrl(path) {
+  return `https://github.com/${GH_OWNER}/${GH_REPO}/blob/${GH_BRANCH}/${encodeURI(path)}`;
+}
+function isImage(ext) { return ['png','jpg','jpeg','webp','gif','svg','avif'].includes(ext); }
+function isPdf(ext) { return ext === 'pdf'; }
+
+async function loadGithubAssets() {
+  const api = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/git/trees/${GH_BRANCH}?recursive=1`;
+  try {
+    const r = await fetch(api, {headers:{'Accept':'application/vnd.github+json'}, cache:'no-store'});
+    if(!r.ok) throw new Error('GitHub ' + r.status);
+    const data = await r.json();
+    remoteAssets = (data.tree || [])
+      .filter(x => x.type === 'blob' && x.path.startsWith('assets/'))
+      .filter(x => !/(^|\/)\.gitkeep$|(^|\/)README/i.test(x.path))
+      .map(x => {
+        const parts = x.path.split('/');
+        const section = parts[1];
+        if(!SECTION_NAMES[section]) return null;
+        return {
+          section,
+          path:x.path,
+          ext:extFromPath(x.path),
+          displayName:displayNameFromPath(x.path),
+          size:x.size || 0
+        };
+      }).filter(Boolean);
+    githubLoaded = true;
+    renderRemoteAssets();
+  } catch(err) {
+    githubLoaded = true;
+    renderRemoteAssets();
+  }
+}
+
+function renderRemoteAssets() {
+  document.querySelectorAll('.remote-asset').forEach(el => el.remove());
+  remoteAssets.forEach(a => {
+    const grid = document.getElementById('assets-' + a.section);
+    if(!grid) return;
+    const url = rawUrl(a.path);
+    const view = githubViewUrl(a.path);
+    const card = document.createElement('article');
+    card.className = 'asset-card remote-asset';
+    card.dataset.section = a.section;
+    card.dataset.name = normalize(a.displayName + ' ' + a.ext + ' ' + a.path);
+    card.style.setProperty('--section', SECTION_COLORS[a.section]);
+    card.style.setProperty('--sectionsoft', SECTION_SOFT[a.section]);
+    let preview;
+    if(isImage(a.ext)) {
+      preview = `<button class="preview-media image-preview" type="button" onclick="openImagePreview(this)" data-src="${url}" aria-label="Abrir ${escapeHtml(a.displayName)}"><img src="${url}" alt="${escapeHtml(a.displayName)}" loading="lazy"></button>`;
+    } else {
+      preview = `<a class="preview-media file-preview" href="${view}" target="_blank" rel="noopener"><span class="file-badge">${escapeHtml(a.ext.toUpperCase())}</span></a>`;
+    }
+    card.innerHTML = `
+      ${preview}
+      <div class="asset-info">
+        <div class="asset-copy">
+          <span class="file-type">${escapeHtml(a.ext.toUpperCase())}</span>
+          <strong>${escapeHtml(a.displayName)}</strong>
+        </div>
+        <div class="asset-actions">
+          <a class="open-btn" href="${view}" target="_blank" rel="noopener">Abrir</a>
+          <button class="grab-btn" type="button" onclick="downloadRemoteAsset('${url.replace(/'/g,"\\'")}','${a.path.split('/').pop().replace(/'/g,"\\'")}')">Descargar</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateEmptyStates();
+}
+
+function updateEmptyStates() {
+  Object.keys(SECTION_NAMES).forEach(id => {
+    const grid = document.getElementById('assets-' + id);
+    const empty = document.getElementById('empty-' + id);
+    if(!grid || !empty) return;
+    const count = grid.querySelectorAll('.asset-card').length;
+    empty.style.display = count ? 'none' : 'block';
+    empty.textContent = count ? '' : '0 archivos';
+  });
+}
+
+async function downloadDataAsset(btn) {
+  const src = btn.dataset.src;
+  const filename = btn.dataset.filename || 'GLOBOLOGIA-asset';
+  await saveBlobFromUrl(src, filename, btn);
+}
+async function downloadRemoteAsset(url, filename) {
+  await saveBlobFromUrl(url, filename, null);
+}
+async function saveBlobFromUrl(url, filename, btn) {
+  const old = btn ? btn.textContent : '';
+  if(btn) btn.textContent = '…';
+  try {
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('download failed');
+    const blob = await r.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),1500);
+  } catch(e) {
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.target = '_blank';
+    document.body.appendChild(a); a.click(); a.remove();
+  } finally {
+    if(btn) btn.textContent = old;
+  }
+}
+
+function openImagePreview(btn) {
+  const modal = document.getElementById('image-modal');
+  const img = document.getElementById('modal-image');
+  img.src = btn.dataset.src;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeImagePreview(e) {
+  if(e) e.stopPropagation();
+  document.getElementById('image-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+window.addEventListener('load', () => {
+  const hash = location.hash.replace('#','');
+  if(hash && SECTION_NAMES[hash]) go(hash);
+  else go('inicio', document.querySelector('.nbtn[data-tab="inicio"]'));
+  updateEmptyStates();
+  loadGithubAssets();
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  }
+});
+</script>
+</body>
+</html>
