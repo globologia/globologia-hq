@@ -1,11 +1,6 @@
-const CACHE='globologia-hq-v4';
-const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg'];
-self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)));});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim();})());});
-self.addEventListener('fetch',e=>{
-  const u=new URL(e.request.url);
-  if(u.hostname==='api.github.com'||u.hostname==='raw.githubusercontent.com') return;
-  if(e.request.mode==='navigate'){
-    e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));
-  }
-});
+const CACHE='globologia-hq-v5';
+const REMOVE=['GLOBOLOGIA 1000 — Presentation (4:3)','Globologia Banner Logos','🎈 Globología Visual System','nina lorenita logo with cloud'];
+const INJECT=`<style>.remote-asset .file-preview img{display:block;width:100%;max-height:370px;object-fit:contain;background:#fff;padding:9px}</style><script>(function(){const banned=${JSON.stringify(['GLOBOLOGIA 1000 — Presentation (4:3)','Globologia Banner Logos','🎈 Globología Visual System','nina lorenita logo with cloud'])};function clean(){try{if(typeof CANVA_ASSETS!=='undefined'){for(let i=CANVA_ASSETS.length-1;i>=0;i--)if(banned.includes(CANVA_ASSETS[i].title))CANVA_ASSETS.splice(i,1)}document.querySelectorAll('.canva-asset').forEach(c=>{const t=c.querySelector('.asset-copy strong')?.textContent?.trim();if(banned.includes(t))c.remove()});document.querySelectorAll('.remote-asset .file-preview[href]').forEach(a=>{const u=a.getAttribute('href')||'';if(/\.(png|jpe?g|webp|gif|svg|avif)(\?|$)/i.test(u)&&!a.querySelector('img'))a.innerHTML='<img src="'+u+'" alt="Preview">'})}catch(e){}}addEventListener('load',()=>{clean();setTimeout(clean,500);setTimeout(clean,1500)});new MutationObserver(clean).observe(document.documentElement,{childList:true,subtree:true});})();<\/script>`;
+self.addEventListener('install',e=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())await caches.delete(k);await self.clients.claim()})()));
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.hostname==='api.github.com'||u.hostname==='raw.githubusercontent.com')return;if(e.request.mode==='navigate')e.respondWith(fetch(e.request,{cache:'no-store'}).then(async r=>{let t=await r.text();t=t.replace('</body>',INJECT+'</body>');return new Response(t,{status:r.status,statusText:r.statusText,headers:{'content-type':'text/html; charset=utf-8'}})}).catch(()=>caches.match('./index.html')))});
