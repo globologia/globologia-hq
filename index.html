@@ -83,7 +83,7 @@
     .file-type{font-family:'Inter',Arial,sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.12em;color:var(--section);text-transform:uppercase}
     .asset-actions{display:grid;grid-template-columns:repeat(2,minmax(92px,max-content));gap:8px;flex:0 1 auto}
     .open-btn,.grab-btn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--section);border-radius:10px;background:var(--sectionsoft);color:var(--section);font-family:'Inter',Arial,sans-serif;font-size:.68rem;font-weight:900;padding:9px 11px;text-decoration:none;cursor:pointer;white-space:nowrap}
-    .grab-btn{background:var(--section);color:#fff}
+    .grab-btn{background:var(--section);color:#fff}.open-btn,.grab-btn{min-height:44px}
 
     .empty-state,.error-state{display:none;margin:4px auto 0;max-width:620px;border:1px dashed #D8DBE2;border-radius:15px;padding:25px;text-align:center;font-family:'Inter',Arial,sans-serif;font-size:.78rem;font-weight:700;color:#8A9099;background:#FCFCFD}
     .error-state{border-style:solid;color:#7A3E3E;background:#FFF7F7}
@@ -337,21 +337,53 @@
         const type=document.createElement('span');type.className='file-type';type.textContent=asset.ext.toUpperCase();
         const title=document.createElement('strong');title.textContent=asset.displayName;copy.append(type,title);
         const actions=document.createElement('div');actions.className='asset-actions';
-        const open=document.createElement('a');open.className='open-btn';open.target='_blank';open.rel='noopener noreferrer';open.href=canOpenRaw(asset.ext)?raw:view;open.textContent='Abrir';
-        const download=document.createElement('button');download.type='button';download.className='grab-btn';download.textContent='Descargar';download.dataset.url=raw;download.dataset.filename=asset.path.split('/').pop();
-        actions.append(open,download);info.append(copy,actions);card.append(preview,info);grid.appendChild(card);
+        const open=document.createElement('a');open.className='open-btn';open.target='_blank';open.rel='noopener noreferrer';open.href=canOpenRaw(asset.ext)?raw:view;
+        const save=document.createElement('button');save.type='button';save.className='grab-btn';save.dataset.url=raw;save.dataset.filename=asset.path.split('/').pop();save.dataset.ext=asset.ext;
+        if(isImage(asset.ext)){open.textContent='Ver';save.textContent='Guardar';save.classList.add('save-image-btn');}
+        else if(asset.ext==='pdf'){open.textContent='Abrir PDF';save.textContent='Descargar PDF';}
+        else{open.textContent='Abrir';save.textContent='Descargar';}
+        actions.append(open,save);info.append(copy,actions);card.append(preview,info);grid.appendChild(card);
       });
       updateStates();
     }
 
-    async function downloadAsset(button){
-      const url=button.dataset.url;const filename=button.dataset.filename||'archivo';
+    async function saveAsset(button){
+      const url=button.dataset.url;
+      const filename=button.dataset.filename||'archivo';
+      const ext=(button.dataset.ext||'').toLowerCase();
       button.disabled=true;
       try{
-        const response=await fetch(url);if(!response.ok)throw new Error('Download '+response.status);
-        const blob=await response.blob();const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(objectUrl);},1000);
-      }catch(err){window.open(url,'_blank','noopener');}
-      finally{button.disabled=false;}
+        const response=await fetch(url);
+        if(!response.ok)throw new Error('Download '+response.status);
+        const blob=await response.blob();
+
+        // Images use the phone's native save/share sheet whenever supported.
+        if(['png','jpg','jpeg','webp','gif','avif'].includes(ext) &&
+           typeof File!=='undefined' &&
+           navigator.share &&
+           navigator.canShare){
+          const file=new File([blob],filename,{type:blob.type||'application/octet-stream'});
+          if(navigator.canShare({files:[file]})){
+            await navigator.share({files:[file],title:filename});
+            return;
+          }
+        }
+
+        // Fallback for browsers that do not support sharing files.
+        const objectUrl=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=objectUrl;
+        a.download=filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){URL.revokeObjectURL(objectUrl);},1500);
+      }catch(err){
+        if(err && err.name==='AbortError')return;
+        window.open(url,'_blank','noopener');
+      }finally{
+        button.disabled=false;
+      }
     }
 
     function updateStates(){
@@ -365,7 +397,7 @@
       const nav=event.target.closest('.nbtn');if(nav){go(nav.dataset.tab);return;}
       const jump=event.target.closest('[data-jump]');if(jump){go(jump.dataset.jump);return;}
       const result=event.target.closest('.sr-item');if(result){go(result.dataset.section);return;}
-      const download=event.target.closest('.grab-btn');if(download){downloadAsset(download);return;}
+      const save=event.target.closest('.grab-btn');if(save){saveAsset(save);return;}
       const retry=event.target.closest('.retry-btn');if(retry){loadGithubAssets();return;}
       const wrap=document.getElementById('searchbar-wrap');if(wrap&&!wrap.contains(event.target))closeSearch();
     });
