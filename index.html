@@ -200,8 +200,7 @@
 
   <script>
     'use strict';
-
-    const PIN_HASH='7a99d42d79e9bafeaa5ccedaf0135267da4ccd197a99131a8cf15025cb54ab18';
+    const SHARED_PIN='1133';
     const AUTH_KEY='globologia-hq-auth-until';
     const AUTH_DAYS=30;
     let appStarted=false;
@@ -222,8 +221,7 @@
       if(!appStarted)initApp();
     }
     async function verifyPin(pin){
-      if(!/^\d{4}$/.test(pin))return false;
-      try{return (await sha256(pin))===PIN_HASH;}catch(e){console.error('PIN verification unavailable',e);return false;}
+      return /^\d{4}$/.test(pin) && pin===SHARED_PIN;
     }
     async function submitPin(event){
       event.preventDefault();
