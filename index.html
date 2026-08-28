@@ -1,142 +1,393 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
-<title>GLOBOLOGÍA HQ</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
-<style>
-:root{--navy:#0D2344;--gold:#D8B24A;--ink:#17233A;--border:#E1E3E8;--rainbow:linear-gradient(90deg,#E43C2F,#F3792B,#F0C92B,#52A852,#149B96,#2C76C1,#5949B6,#B03D87)}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;background:#fff}
-body{margin:0;background:#fff;color:var(--ink);font-family:'Source Serif 4',Georgia,serif;min-height:100dvh}
-body::before{content:"";position:fixed;top:0;left:0;right:0;height:4px;background:var(--rainbow);z-index:999}
-#topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.975);border-bottom:1px solid #ECEDEF;box-shadow:0 5px 18px rgba(13,35,68,.045);backdrop-filter:blur(12px);padding-top:4px}
-#brandbar{max-width:760px;margin:0 auto;padding:9px 16px 3px;display:flex;align-items:center}
-#book-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-weight:800;letter-spacing:.11em;color:var(--navy);font-size:.84rem}
-#book-title img{width:29px;height:29px;object-fit:contain} #book-title small{font-family:'Inter',sans-serif;color:var(--gold);font-size:.56rem;letter-spacing:.16em;margin-left:4px}
-#searchbar-row{max-width:760px;margin:0 auto;padding:8px 14px 10px} #searchbar-wrap{position:relative}
-#searchbar-wrap::before{content:"⌕";position:absolute;left:18px;top:50%;transform:translateY(-52%);font-family:Georgia,serif;font-size:1.7rem;color:var(--navy);pointer-events:none;z-index:2}
-#search-input{width:100%;height:66px;border:2px solid #D7DAE1;border-radius:20px;background:#fff;color:var(--navy);font-family:'Inter',sans-serif;font-size:1.07rem;font-weight:600;padding:0 46px 0 52px;outline:none;box-shadow:0 7px 22px rgba(13,35,68,.065)}
-#search-input::placeholder{color:#8A909B;font-weight:500} #search-input:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(13,35,68,.075),0 8px 24px rgba(13,35,68,.07)}
-#search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#F1F2F5;color:#6C7380;font-size:1.15rem;display:none;cursor:pointer}
-#search-results{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #DFE2E8;border-radius:16px;box-shadow:0 16px 34px rgba(13,35,68,.14);overflow:hidden;max-height:55vh;overflow-y:auto;display:none;z-index:200}
-#search-results.show{display:block} .sr-item{width:100%;border:0;border-bottom:1px solid #ECEEF2;background:#fff;padding:13px 15px;text-align:left;cursor:pointer;display:grid;gap:2px}
-.sr-tab{font-family:'Inter',sans-serif;font-size:.61rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)} .sr-label{font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);font-size:.94rem} .sr-meta{font-family:'Inter',sans-serif;font-size:.72rem;color:#777E89} .sr-empty{padding:18px;text-align:center;font-family:'Inter',sans-serif;color:#858B94;font-size:.82rem}
-#topbar-inner{max-width:760px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:0 14px 11px;scrollbar-width:none} #topbar-inner::-webkit-scrollbar{display:none}
-.nbtn{--tab:#0D2344;--tabsoft:#F3F5F8;flex:0 0 auto;border:1px solid #DADDE4;border-radius:999px;background:#fff;color:#4E596D;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:800;padding:9px 13px;line-height:1;cursor:pointer}
-.nbtn.on{background:var(--tabsoft);border-color:color-mix(in srgb,var(--tab) 42%,white);color:var(--tab)}
-#page{max-width:760px;margin:0 auto;padding:22px 14px 72px} .section{display:none;animation:fadein .2s ease} .section.active{display:block} @keyframes fadein{from{opacity:.15;transform:translateY(5px)}to{opacity:1;transform:none}}
-.qgrid{display:grid;grid-template-columns:1fr;gap:14px;max-width:620px;margin:0 auto}
-.qcard{--accent:#0D2344;--soft:#F5F6F8;position:relative;width:100%;min-height:98px;border:1px solid color-mix(in srgb,var(--accent) 24%,white);border-radius:18px;background:var(--soft);padding:18px 62px 18px 18px;display:grid;grid-template-columns:54px 1fr;align-items:center;gap:10px;text-align:left;cursor:pointer;box-shadow:0 4px 12px rgba(13,35,68,.03);overflow:hidden}
-.qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent)} .qnum{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:900;color:var(--accent)} .qname{font-family:'Playfair Display',serif;font-size:1.22rem;font-weight:800;color:var(--navy)} .qarrow{position:absolute;right:19px;top:50%;transform:translateY(-50%);color:var(--accent);font-family:'Inter',sans-serif;font-size:1.35rem}
-.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:3px 1px 18px} .ptag{display:inline-block;font-family:'Inter',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--section);border-bottom:1px solid color-mix(in srgb,var(--section) 55%,white);padding-bottom:5px;margin-bottom:9px}
-h1{margin:0;font-family:'Playfair Display',serif;font-size:clamp(1.85rem,8vw,2.5rem);line-height:1.03;color:var(--navy)} .upload-btn{flex:0 0 auto;text-decoration:none;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:900;padding:10px 12px;border-radius:12px;background:var(--sectionsoft);color:var(--section);border:1px solid color-mix(in srgb,var(--section) 32%,white)}
-.asset-grid{display:grid;grid-template-columns:1fr;gap:13px;max-width:620px;margin:0 auto} .asset-card{border:1px solid #E1E4E9;border-radius:17px;background:#fff;overflow:hidden;box-shadow:0 6px 18px rgba(13,35,68,.045)}
-.canva-preview{min-height:112px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;background:linear-gradient(135deg,var(--sectionsoft),#fff);text-decoration:none} .canva-mark{width:58px;height:58px;border-radius:18px;background:var(--section);display:grid;place-items:center;color:#fff;font-family:'Inter',sans-serif;font-weight:900;font-size:.67rem;letter-spacing:.08em;box-shadow:0 7px 16px color-mix(in srgb,var(--section) 22%,transparent)} .canva-pages{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:800;color:var(--section)}
-.file-preview{min-height:120px;display:grid;place-items:center;background:linear-gradient(145deg,#FAFAFB,#F1F2F5);padding:20px;text-decoration:none} .file-badge{display:grid;place-items:center;width:70px;height:82px;border-radius:10px;background:#fff;border:1px solid #DBDEE5;font-family:'Inter',sans-serif;font-weight:900;color:var(--section);font-size:.76rem}
-.asset-info{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px} .asset-copy{min-width:0;display:grid;gap:3px} .asset-copy strong{font-family:'Playfair Display',serif;color:var(--navy);font-size:1rem;line-height:1.2;word-break:break-word} .file-type{font-family:'Inter',sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.12em;color:var(--section);text-transform:uppercase}
-.asset-actions{display:flex;gap:7px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end} .open-btn,.grab-btn{border:1px solid color-mix(in srgb,var(--section) 32%,white);border-radius:10px;background:var(--sectionsoft);color:var(--section);font-family:'Inter',sans-serif;font-size:.68rem;font-weight:900;padding:9px 10px;text-decoration:none;cursor:pointer} .grab-btn{background:var(--section);border-color:var(--section);color:#fff}
-.empty-state{display:none;margin:4px auto 0;max-width:620px;border:1px dashed #D8DBE2;border-radius:15px;padding:25px;text-align:center;font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;color:#8A9099;background:#FCFCFD}
-@media(max-width:420px){#brandbar{padding-top:8px}#searchbar-row,#topbar-inner,#page{padding-left:11px;padding-right:11px}#search-input{height:64px;font-size:1rem}.asset-info{align-items:flex-end}.asset-actions{flex-direction:column}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>GLOBOLOGÍA HQ</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Playfair+Display:wght@700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#0D2344;
+      --gold:#D8B24A;
+      --ink:#17233A;
+      --muted:#747C89;
+      --border:#E1E3E8;
+      --paper:#FFFFFF;
+      --rainbow:linear-gradient(90deg,#E43C2F,#F3792B,#F0C92B,#52A852,#149B96,#2C76C1,#5949B6,#B03D87);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:#fff}
+    body{margin:0;background:#fff;color:var(--ink);font-family:'Source Serif 4',Georgia,serif;min-height:100vh;min-height:100dvh}
+    body::before{content:"";position:fixed;inset:0 0 auto 0;height:4px;background:var(--rainbow);z-index:999}
+    button,input{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+
+    #topbar{position:sticky;top:0;z-index:100;background:#fff;background:rgba(255,255,255,.975);border-bottom:1px solid #ECEDEF;box-shadow:0 5px 18px rgba(13,35,68,.045);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-top:4px}
+    #brandbar{max-width:760px;margin:0 auto;padding:9px 16px 3px;display:flex;align-items:center}
+    #book-title{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',Georgia,serif;font-weight:800;letter-spacing:.11em;color:var(--navy);font-size:.84rem}
+    #book-title img{width:29px;height:29px;object-fit:contain}
+    #book-title small{font-family:'Inter',Arial,sans-serif;color:var(--gold);font-size:.56rem;letter-spacing:.16em;margin-left:4px}
+
+    #searchbar-row{max-width:760px;margin:0 auto;padding:8px 14px 10px}
+    #searchbar-wrap{position:relative}
+    #searchbar-wrap::before{content:"⌕";position:absolute;left:18px;top:50%;transform:translateY(-52%);font-family:Georgia,serif;font-size:1.7rem;color:var(--navy);pointer-events:none;z-index:2}
+    #search-input{width:100%;height:66px;border:2px solid #D7DAE1;border-radius:20px;background:#fff;color:var(--navy);font-family:'Inter',Arial,sans-serif;font-size:1.07rem;font-weight:600;padding:0 46px 0 52px;outline:none;box-shadow:0 7px 22px rgba(13,35,68,.065)}
+    #search-input::placeholder{color:#8A909B;font-weight:500}
+    #search-input:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(13,35,68,.075),0 8px 24px rgba(13,35,68,.07)}
+    #search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:#F1F2F5;color:#6C7380;font-size:1.15rem;display:none;cursor:pointer}
+    #search-results{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #DFE2E8;border-radius:16px;box-shadow:0 16px 34px rgba(13,35,68,.14);overflow:hidden;max-height:55vh;overflow-y:auto;display:none;z-index:200}
+    #search-results.show{display:block}
+    .sr-item{width:100%;border:0;border-bottom:1px solid #ECEEF2;background:#fff;padding:13px 15px;text-align:left;cursor:pointer;display:grid;gap:2px}
+    .sr-tab{font-family:'Inter',Arial,sans-serif;font-size:.61rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+    .sr-label{font-family:'Playfair Display',Georgia,serif;font-weight:700;color:var(--navy);font-size:.94rem}
+    .sr-meta{font-family:'Inter',Arial,sans-serif;font-size:.72rem;color:#777E89}
+    .sr-empty{padding:18px;text-align:center;font-family:'Inter',Arial,sans-serif;color:#858B94;font-size:.82rem}
+
+    #topbar-inner{max-width:760px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:0 14px 11px;scrollbar-width:none}
+    #topbar-inner::-webkit-scrollbar{display:none}
+    .nbtn{flex:0 0 auto;border:1px solid #DADDE4;border-radius:999px;background:#fff;color:#4E596D;font-family:'Inter',Arial,sans-serif;font-size:.72rem;font-weight:800;padding:9px 13px;line-height:1;cursor:pointer}
+    .nbtn.on{background:var(--tabsoft,#F3F5F8);border-color:var(--tab,#0D2344);color:var(--tab,#0D2344)}
+
+    #page{max-width:760px;margin:0 auto;padding:22px 14px 72px}
+    .section{display:none;animation:fadein .2s ease}
+    .section.active{display:block}
+    @keyframes fadein{from{opacity:.15;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+    .qgrid{display:grid;grid-template-columns:1fr;gap:14px;max-width:620px;margin:0 auto}
+    .qcard{position:relative;width:100%;min-height:98px;border:1px solid #E4E6EA;border-radius:18px;background:var(--soft,#F5F6F8);padding:18px 62px 18px 18px;display:grid;grid-template-columns:54px 1fr;align-items:center;gap:10px;text-align:left;cursor:pointer;box-shadow:0 4px 12px rgba(13,35,68,.03);overflow:hidden}
+    .qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--accent,#0D2344)}
+    .qnum{font-family:'Inter',Arial,sans-serif;font-size:.78rem;font-weight:900;color:var(--accent,#0D2344)}
+    .qname{font-family:'Playfair Display',Georgia,serif;font-size:1.22rem;font-weight:800;color:var(--navy)}
+    .qarrow{position:absolute;right:19px;top:50%;transform:translateY(-50%);color:var(--accent,#0D2344);font-family:'Inter',Arial,sans-serif;font-size:1.35rem}
+
+    .section-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:3px 1px 18px;flex-wrap:wrap}
+    .ptag{display:inline-block;font-family:'Inter',Arial,sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--section);border-bottom:1px solid var(--section);padding-bottom:5px;margin-bottom:9px}
+    h1{margin:0;font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.85rem,8vw,2.5rem);line-height:1.03;color:var(--navy)}
+    .upload-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;text-decoration:none;font-family:'Inter',Arial,sans-serif;font-size:.72rem;font-weight:900;padding:10px 14px;border-radius:12px;background:var(--sectionsoft);color:var(--section);border:1px solid var(--section)}
+
+    .asset-grid{display:grid;grid-template-columns:1fr;gap:13px;max-width:620px;margin:0 auto}
+    .asset-card{border:1px solid var(--border);border-radius:17px;background:#fff;overflow:hidden;box-shadow:0 6px 18px rgba(13,35,68,.045)}
+    .file-preview{display:grid;place-items:center;width:100%;min-height:120px;background:linear-gradient(145deg,#FAFAFB,#F1F2F5);text-decoration:none;overflow:hidden}
+    .file-preview.image-preview{padding:0;background:#fff}
+    .file-preview img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#fff}
+    .file-badge{display:grid;place-items:center;width:70px;height:82px;border-radius:10px;background:#fff;border:1px solid #DBDEE5;font-family:'Inter',Arial,sans-serif;font-weight:900;color:var(--section);font-size:.76rem;margin:20px}
+
+    .asset-info{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;flex-wrap:wrap}
+    .asset-copy{min-width:0;display:grid;gap:3px;flex:1 1 220px}
+    .asset-copy strong{font-family:'Playfair Display',Georgia,serif;color:var(--navy);font-size:1rem;line-height:1.2;overflow-wrap:anywhere}
+    .file-type{font-family:'Inter',Arial,sans-serif;font-size:.58rem;font-weight:900;letter-spacing:.12em;color:var(--section);text-transform:uppercase}
+    .asset-actions{display:grid;grid-template-columns:repeat(2,minmax(92px,max-content));gap:8px;flex:0 1 auto}
+    .open-btn,.grab-btn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--section);border-radius:10px;background:var(--sectionsoft);color:var(--section);font-family:'Inter',Arial,sans-serif;font-size:.68rem;font-weight:900;padding:9px 11px;text-decoration:none;cursor:pointer;white-space:nowrap}
+    .grab-btn{background:var(--section);color:#fff}
+
+    .empty-state,.error-state{display:none;margin:4px auto 0;max-width:620px;border:1px dashed #D8DBE2;border-radius:15px;padding:25px;text-align:center;font-family:'Inter',Arial,sans-serif;font-size:.78rem;font-weight:700;color:#8A9099;background:#FCFCFD}
+    .error-state{border-style:solid;color:#7A3E3E;background:#FFF7F7}
+    .retry-btn{margin-top:12px;border:1px solid #B75B5B;border-radius:10px;background:#fff;color:#8A3F3F;font-family:'Inter',Arial,sans-serif;font-weight:800;padding:8px 12px;cursor:pointer}
+
+    @media (max-width:559px){
+      #brandbar{padding-top:8px}
+      #searchbar-row,#topbar-inner,#page{padding-left:11px;padding-right:11px}
+      #search-input{height:64px;font-size:1rem}
+      .section-title-row{align-items:flex-start}
+      .upload-btn{width:100%}
+      .asset-info{align-items:flex-start}
+      .asset-actions{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;flex:1 1 100%}
+      .asset-actions>*{width:100%}
+    }
+    @media (max-width:360px){
+      .asset-actions{grid-template-columns:1fr}
+      .nbtn{padding:10px 13px;font-size:.74rem}
+    }
+
+
+    /* Simple shared-PIN gate. This protects the HQ interface, not direct public repository URLs. */
+    body.locked #topbar,body.locked #page{display:none!important}
+    #pin-gate{display:none;position:fixed;inset:0;z-index:2000;background:#fff;align-items:center;justify-content:center;padding:24px}
+    body.locked #pin-gate{display:flex}
+    .pin-panel{width:min(100%,390px);text-align:center;padding:34px 28px;border:1px solid #E3E5EA;border-radius:24px;background:#fff;box-shadow:0 18px 54px rgba(13,35,68,.12)}
+    .pin-mark{width:72px;height:72px;margin:0 auto 18px;border-radius:22px;border:1px solid #E2E4E8;display:grid;place-items:center;background:#fff;box-shadow:0 7px 22px rgba(13,35,68,.07)}
+    .pin-mark img{width:48px;height:48px;object-fit:contain}
+    .pin-panel h1{font-size:2rem;margin:0 0 7px}
+    .pin-panel p{margin:0 0 22px;color:var(--muted);font-family:'Inter',Arial,sans-serif;font-size:.86rem;line-height:1.45}
+    #pin-input{width:100%;height:62px;border:2px solid #D7DAE1;border-radius:16px;background:#fff;color:var(--navy);font-family:'Inter',Arial,sans-serif;font-size:1.65rem;font-weight:800;letter-spacing:.32em;text-align:center;padding:0 12px 0 calc(12px + .32em);outline:none}
+    #pin-input:focus{border-color:var(--navy);box-shadow:0 0 0 4px rgba(13,35,68,.075)}
+    #pin-submit{width:100%;min-height:48px;margin-top:12px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-family:'Inter',Arial,sans-serif;font-weight:800;cursor:pointer}
+    #pin-error{min-height:20px;margin-top:11px!important;margin-bottom:0!important;color:#A33D3D!important;font-size:.78rem!important}
+    .pin-panel.shake{animation:pinshake .28s ease}
+    @keyframes pinshake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+
+  </style>
 </head>
-<body>
-<div id="topbar">
-<div id="brandbar"><div id="book-title"><img alt="Símbolo de Globología" src="icon.svg"><span>GLOBOLOGÍA <small>HQ</small></span></div></div>
-<div id="searchbar-row"><div id="searchbar-wrap"><input id="search-input" type="search" autocomplete="off" placeholder="Buscar archivos, PDFs, logos…" oninput="doSearch(this.value)" onfocus="doSearch(this.value)"><button id="search-clear" type="button" onclick="clearSearch()">×</button><div id="search-results"></div></div></div>
-<div id="topbar-inner"><button class="nbtn on" data-tab="inicio" style="--tab:#0D2344;--tabsoft:#F2F4F7" onclick="go('inicio',this)">Inicio</button><button class="nbtn" data-tab="libro" style="--tab:#E44B31;--tabsoft:#FFF1ED" onclick="go('libro',this)">Libro</button>
-<button class="nbtn" data-tab="impresion" style="--tab:#C79612;--tabsoft:#FFF8DF" onclick="go('impresion',this)">Impresión</button>
-<button class="nbtn" data-tab="legal" style="--tab:#6946A5;--tabsoft:#F5F0FF" onclick="go('legal',this)">Legal</button>
-<button class="nbtn" data-tab="marca" style="--tab:#C7447B;--tabsoft:#FFF0F7" onclick="go('marca',this)">Marca</button>
-<button class="nbtn" data-tab="marketing" style="--tab:#319656;--tabsoft:#EEF9F1" onclick="go('marketing',this)">Marketing</button>
-<button class="nbtn" data-tab="redes" style="--tab:#168B91;--tabsoft:#ECFAFA" onclick="go('redes',this)">Redes</button></div>
-</div>
-<main id="page">
-<section class="section active" id="s-inicio"><div class="qgrid"><button class="qcard" type="button" style="--accent:#E44B31;--soft:#FFF1ED" onclick="jumpTo('libro')">
-<span class="qnum">01</span><span class="qname">El Libro</span><span class="qarrow">→</span>
-</button>
-<button class="qcard" type="button" style="--accent:#C79612;--soft:#FFF8DF" onclick="jumpTo('impresion')">
-<span class="qnum">02</span><span class="qname">Impresión</span><span class="qarrow">→</span>
-</button>
-<button class="qcard" type="button" style="--accent:#6946A5;--soft:#F5F0FF" onclick="jumpTo('legal')">
-<span class="qnum">03</span><span class="qname">Legal</span><span class="qarrow">→</span>
-</button>
-<button class="qcard" type="button" style="--accent:#C7447B;--soft:#FFF0F7" onclick="jumpTo('marca')">
-<span class="qnum">04</span><span class="qname">Marca & Lorenita</span><span class="qarrow">→</span>
-</button>
-<button class="qcard" type="button" style="--accent:#319656;--soft:#EEF9F1" onclick="jumpTo('marketing')">
-<span class="qnum">05</span><span class="qname">Marketing</span><span class="qarrow">→</span>
-</button>
-<button class="qcard" type="button" style="--accent:#168B91;--soft:#ECFAFA" onclick="jumpTo('redes')">
-<span class="qnum">06</span><span class="qname">Redes & Plataformas</span><span class="qarrow">→</span>
-</button></div></section>
-<section class="section" id="s-libro" data-section="libro" style="--section:#E44B31;--sectionsoft:#FFF1ED">
-<div class="section-title-row"><div><span class="ptag">Libro</span><h1>El Libro</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/libro" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-libro"></div>
-<div class="empty-state" id="empty-libro">0 archivos</div>
-</section>
-<section class="section" id="s-impresion" data-section="impresion" style="--section:#C79612;--sectionsoft:#FFF8DF">
-<div class="section-title-row"><div><span class="ptag">Impresión</span><h1>Impresión</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/impresion" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-impresion"></div>
-<div class="empty-state" id="empty-impresion">0 archivos</div>
-</section>
-<section class="section" id="s-legal" data-section="legal" style="--section:#6946A5;--sectionsoft:#F5F0FF">
-<div class="section-title-row"><div><span class="ptag">Legal</span><h1>Legal</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/legal" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-legal"></div>
-<div class="empty-state" id="empty-legal">0 archivos</div>
-</section>
-<section class="section" id="s-marca" data-section="marca" style="--section:#C7447B;--sectionsoft:#FFF0F7">
-<div class="section-title-row"><div><span class="ptag">Marca</span><h1>Marca & Lorenita</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marca" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-marca"></div>
-<div class="empty-state" id="empty-marca">0 archivos</div>
-</section>
-<section class="section" id="s-marketing" data-section="marketing" style="--section:#319656;--sectionsoft:#EEF9F1">
-<div class="section-title-row"><div><span class="ptag">Marketing</span><h1>Marketing</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marketing" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-marketing"></div>
-<div class="empty-state" id="empty-marketing">0 archivos</div>
-</section>
-<section class="section" id="s-redes" data-section="redes" style="--section:#168B91;--sectionsoft:#ECFAFA">
-<div class="section-title-row"><div><span class="ptag">Redes</span><h1>Redes & Plataformas</h1></div>
-<a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/redes" target="_blank" rel="noopener">+ Subir</a></div>
-<div class="asset-grid" id="assets-redes"></div>
-<div class="empty-state" id="empty-redes">0 archivos</div>
-</section>
-</main>
-<script>
-const GH_OWNER='globologia',GH_REPO='globologia-hq',GH_BRANCH='main';
-const SECTION_NAMES={"libro": "El Libro", "impresion": "Impresión", "legal": "Legal", "marca": "Marca & Lorenita", "marketing": "Marketing", "redes": "Redes & Plataformas"};
-const SECTION_COLORS={"libro": "#E44B31", "impresion": "#C79612", "legal": "#6946A5", "marca": "#C7447B", "marketing": "#319656", "redes": "#168B91"};
-const SECTION_SOFT={"libro": "#FFF1ED", "impresion": "#FFF8DF", "legal": "#F5F0FF", "marca": "#FFF0F7", "marketing": "#EEF9F1", "redes": "#ECFAFA"};
-const CANVA_ASSETS=[{"section": "libro", "title": "GLOBOLOGIA 4000A", "pages": 23, "view": "https://www.canva.com/d/T7rwmfi5nO-7GT3", "edit": "https://www.canva.com/d/Ga3L6KG2z43w7rB"}, {"section": "libro", "title": "globologia spreads", "pages": 16, "view": "https://www.canva.com/d/XNAjH8H_WztQoZk", "edit": "https://www.canva.com/d/V66_t4u_ZysBq-g"}, {"section": "libro", "title": "globologia 3000 spreads", "pages": 60, "view": "https://www.canva.com/d/pYWPGgrPZnjr9U2", "edit": "https://www.canva.com/d/cuCoz5F2bC5iKKC"}, {"section": "libro", "title": "globologia 3000.pdf", "pages": 35, "view": "https://www.canva.com/d/fm-dj0Zj15tTBiw", "edit": "https://www.canva.com/d/GhLB4kCo2HqNOkG"}, {"section": "libro", "title": "globologia 3000 COPY/TEXT only", "pages": 29, "view": "https://www.canva.com/d/iAj4NkmZpu4iw7g", "edit": "https://www.canva.com/d/emm6j4lwQshpM66"}, {"section": "libro", "title": "GLOBOLOGIA 2000", "pages": 55, "view": "https://www.canva.com/d/krz6h9DRwyWh3mE", "edit": "https://www.canva.com/d/zBrSeDfWf-W75M2"}, {"section": "libro", "title": "GLOBOLOGÍA 1000", "pages": 44, "view": "https://www.canva.com/d/70uhRar1EuXWjIZ", "edit": "https://www.canva.com/d/bmQSe30-w3XnSoR"}, {"section": "libro", "title": "Globologia 200", "pages": 17, "view": "https://www.canva.com/d/1h0aXkMtPaxB28t", "edit": "https://www.canva.com/d/RkPrF2ML8CVuO3P"}, {"section": "libro", "title": "GLOBOLOGIA 1000 — Presentation (4:3)", "pages": 57, "view": "https://www.canva.com/d/R5NtM82cmTE4o2e", "edit": "https://www.canva.com/d/LENPNWeFhQy_67Y"}, {"section": "libro", "title": "GLOBOLOGIA 1000 — 11 x 8.5 in", "pages": 57, "view": "https://www.canva.com/d/PEw8TTTA4Am-ww5", "edit": "https://www.canva.com/d/JoKUBQcGDq1_KQt"}, {"section": "legal", "title": "globologia_copyright_page.pdf", "pages": 1, "view": "https://www.canva.com/d/-bfUw8lGEUbUCJR", "edit": "https://www.canva.com/d/6qmVPZvHjh1Amxy"}, {"section": "legal", "title": "globologia_copyright_page_compact.pdf", "pages": 1, "view": "https://www.canva.com/d/SvTrgiM-4CUk2t8", "edit": "https://www.canva.com/d/07Vegto8lXfxtKa"}, {"section": "marca", "title": "logo's de globologia", "pages": 9, "view": "https://www.canva.com/d/XGE4zQE9kJulr7Z", "edit": "https://www.canva.com/d/J7AJzTfW-jT4Wmg"}, {"section": "marca", "title": "Globologia Banner Logos", "pages": 6, "view": "https://www.canva.com/d/1KxsL_iD-CgpEPw", "edit": "https://www.canva.com/d/qOuwRK20cMk3Ujp"}, {"section": "marca", "title": "🎈 Globología Visual System", "pages": 1, "view": "https://www.canva.com/d/3SRtnAjY9_AlCSO", "edit": "https://www.canva.com/d/1090ChAnk0aA5JX"}, {"section": "marca", "title": "Lorenita AKA Nina", "pages": 3, "view": "https://www.canva.com/d/F-c9-4yM8NhsRbZ", "edit": "https://www.canva.com/d/_Hm25r2LiXGp0mr"}, {"section": "marca", "title": "nina lorenita logo with cloud", "pages": 3, "view": "https://www.canva.com/d/gAte6utueECBKW-", "edit": "https://www.canva.com/d/Fc2ILgqDf-_W2b0"}, {"section": "marketing", "title": "portadas y mockups para globologia", "pages": 11, "view": "https://www.canva.com/d/evRmHlm-eTX1DYU", "edit": "https://www.canva.com/d/x0nCm_8PB2WiIIi"}, {"section": "redes", "title": "ADVERTISEMENTS FOR SOCIAL MEDIA FOR GLOBOLOGIA", "pages": 13, "view": "https://www.canva.com/d/tCS5odz1LiwClKN", "edit": "https://www.canva.com/d/cvYhcVct0YmeTmP"}, {"section": "redes", "title": "GLOBOLOGIA SOCIAL MEDIA ASSETS", "pages": 16, "view": "https://www.canva.com/d/4fWHxfJeAyCacNU", "edit": "https://www.canva.com/d/GorLtETf0CugPrP"}];
-let remoteAssets=[];
-function go(id,btn){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));const sec=document.getElementById('s-'+id);if(sec)sec.classList.add('active');const target=btn||document.querySelector('.nbtn[data-tab="'+id+'"]');if(target)target.classList.add('on');history.replaceState(null,'',id==='inicio'?location.pathname:'#'+id);window.scrollTo({top:0,behavior:'smooth'});updateEmptyStates();}
-function jumpTo(id){go(id);closeSearch();}
-function normalize(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[c]);}
-function extFromPath(path){const m=path.match(/\.([^.\/]+)$/);return m?m[1].toLowerCase():'file';}
-function displayNameFromPath(path){return path.split('/').pop().replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();}
-function rawUrl(path){return `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${encodeURI(path)}`;}
-function githubViewUrl(path){return `https://github.com/${GH_OWNER}/${GH_REPO}/blob/${GH_BRANCH}/${encodeURI(path)}`;}
-function isImage(ext){return ['png','jpg','jpeg','webp','gif','svg','avif'].includes(ext);}
-function searchItems(){ const secs=Object.keys(SECTION_NAMES).map(section=>({section,label:SECTION_NAMES[section],type:'Sección'})); const c=CANVA_ASSETS.map(a=>({section:a.section,label:a.title,type:'Canva'})); const r=remoteAssets.map(a=>({section:a.section,label:a.displayName,type:a.ext.toUpperCase()})); return secs.concat(c,r);}
-function doSearch(query){const q=normalize(query.trim()),box=document.getElementById('search-results');document.getElementById('search-clear').style.display=q?'block':'none';if(!q){closeSearch();return;}const matches=searchItems().filter(x=>normalize(x.label+' '+x.type+' '+SECTION_NAMES[x.section]).includes(q)).slice(0,30);box.innerHTML=matches.length?matches.map(m=>`<button class="sr-item" onclick="jumpTo('${m.section}')" style="--accent:${SECTION_COLORS[m.section]}"><span class="sr-tab">${SECTION_NAMES[m.section]}</span><span class="sr-label">${escapeHtml(m.label)}</span><span class="sr-meta">${escapeHtml(m.type)}</span></button>`).join(''):'<div class="sr-empty">Sin resultados</div>';box.classList.add('show');}
-function clearSearch(){const i=document.getElementById('search-input');i.value='';i.focus();document.getElementById('search-clear').style.display='none';closeSearch();}
-function closeSearch(){const b=document.getElementById('search-results');b.classList.remove('show');b.innerHTML='';}
-document.addEventListener('click',e=>{const w=document.getElementById('searchbar-wrap');if(w&&!w.contains(e.target))closeSearch();});
-function renderCanvaAssets(){ CANVA_ASSETS.forEach(a=>{const grid=document.getElementById('assets-'+a.section);if(!grid)return;const card=document.createElement('article');card.className='asset-card canva-asset';card.style.setProperty('--section',SECTION_COLORS[a.section]);card.style.setProperty('--sectionsoft',SECTION_SOFT[a.section]);card.innerHTML=`<a class="canva-preview" href="${a.view}" target="_blank" rel="noopener"><span class="canva-mark">CANVA</span><span class="canva-pages">${a.pages} pág${a.pages===1?'':'s'}</span></a><div class="asset-info"><div class="asset-copy"><span class="file-type">CANVA</span><strong>${escapeHtml(a.title)}</strong></div><div class="asset-actions"><a class="open-btn" href="${a.view}" target="_blank" rel="noopener">Abrir</a><a class="grab-btn" href="${a.edit}" target="_blank" rel="noopener">Editar</a></div></div>`;grid.appendChild(card);}); }
-async function loadGithubAssets(){ try{const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/git/trees/${GH_BRANCH}?recursive=1`,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!r.ok)throw new Error();const data=await r.json();remoteAssets=(data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith('assets/')).filter(x=>!/(^|\/)\.gitkeep$|(^|\/)README/i.test(x.path)).map(x=>{const p=x.path.split('/'),section=p[1];if(!SECTION_NAMES[section])return null;return{section,path:x.path,ext:extFromPath(x.path),displayName:displayNameFromPath(x.path)};}).filter(Boolean);renderRemoteAssets();}catch(e){updateEmptyStates();} }
-function renderRemoteAssets(){document.querySelectorAll('.remote-asset').forEach(e=>e.remove());remoteAssets.forEach(a=>{const grid=document.getElementById('assets-'+a.section);if(!grid)return;const url=rawUrl(a.path),view=githubViewUrl(a.path),card=document.createElement('article');card.className='asset-card remote-asset';card.style.setProperty('--section',SECTION_COLORS[a.section]);card.style.setProperty('--sectionsoft',SECTION_SOFT[a.section]);const preview=isImage(a.ext)?`<a class="file-preview" href="${url}" target="_blank"><span class="file-badge">IMG</span></a>`:`<a class="file-preview" href="${view}" target="_blank"><span class="file-badge">${escapeHtml(a.ext.toUpperCase())}</span></a>`;card.innerHTML=`${preview}<div class="asset-info"><div class="asset-copy"><span class="file-type">${escapeHtml(a.ext.toUpperCase())}</span><strong>${escapeHtml(a.displayName)}</strong></div><div class="asset-actions"><a class="open-btn" href="${view}" target="_blank">Abrir</a><button class="grab-btn" onclick="downloadRemoteAsset('${url.replace(/'/g,"\\'")}','${a.path.split('/').pop().replace(/'/g,"\\'")}')">Descargar</button></div></div>`;grid.appendChild(card);});updateEmptyStates();}
-async function downloadRemoteAsset(url,filename){try{const r=await fetch(url);const b=await r.blob();const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);}catch(e){window.open(url,'_blank');}}
-function updateEmptyStates(){Object.keys(SECTION_NAMES).forEach(id=>{const g=document.getElementById('assets-'+id),e=document.getElementById('empty-'+id);if(!g||!e)return;const n=g.querySelectorAll('.asset-card').length;e.style.display=n?'none':'block';});}
-window.addEventListener('load',()=>{renderCanvaAssets();const h=location.hash.replace('#','');go(h&&SECTION_NAMES[h]?h:'inicio');loadGithubAssets();if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./service-worker.js').catch(()=>{});});
-</script>
+<body class="locked">
+
+  <div id="pin-gate" role="dialog" aria-modal="true" aria-labelledby="pin-title">
+    <div class="pin-panel" id="pin-panel">
+      <div class="pin-mark"><img src="icon.svg" alt=""></div>
+      <h1 id="pin-title">GLOBOLOGÍA HQ</h1>
+      <p>Introduce el PIN para abrir tu HQ.</p>
+      <form id="pin-form" novalidate>
+        <input id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="PIN de 4 dígitos">
+        <button id="pin-submit" type="submit">Abrir HQ</button>
+      </form>
+      <p id="pin-error" role="alert" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <header id="topbar">
+    <div id="brandbar">
+      <div id="book-title"><img alt="Símbolo de Globología" src="icon.svg"><span>GLOBOLOGÍA <small>HQ</small></span></div>
+    </div>
+    <div id="searchbar-row">
+      <div id="searchbar-wrap">
+        <input id="search-input" type="search" autocomplete="off" placeholder="Buscar archivos, PDFs, logos…" aria-label="Buscar archivos">
+        <button id="search-clear" type="button" aria-label="Limpiar búsqueda">×</button>
+        <div id="search-results" role="listbox" aria-label="Resultados de búsqueda"></div>
+      </div>
+    </div>
+    <nav id="topbar-inner" aria-label="Secciones">
+      <button class="nbtn on" data-tab="inicio" style="--tab:#0D2344;--tabsoft:#F2F4F7">Inicio</button>
+      <button class="nbtn" data-tab="libro" style="--tab:#E44B31;--tabsoft:#FFF1ED">Libro</button>
+      <button class="nbtn" data-tab="impresion" style="--tab:#C79612;--tabsoft:#FFF8DF">Impresión</button>
+      <button class="nbtn" data-tab="legal" style="--tab:#6946A5;--tabsoft:#F5F0FF">Legal</button>
+      <button class="nbtn" data-tab="marca" style="--tab:#C7447B;--tabsoft:#FFF0F7">Marca</button>
+      <button class="nbtn" data-tab="marketing" style="--tab:#319656;--tabsoft:#EEF9F1">Marketing</button>
+      <button class="nbtn" data-tab="redes" style="--tab:#168B91;--tabsoft:#ECFAFA">Redes</button>
+    </nav>
+  </header>
+
+  <main id="page">
+    <section class="section active" id="s-inicio">
+      <div class="qgrid">
+        <button class="qcard" type="button" data-jump="libro" style="--accent:#E44B31;--soft:#FFF1ED"><span class="qnum">01</span><span class="qname">El Libro</span><span class="qarrow">→</span></button>
+        <button class="qcard" type="button" data-jump="impresion" style="--accent:#C79612;--soft:#FFF8DF"><span class="qnum">02</span><span class="qname">Impresión</span><span class="qarrow">→</span></button>
+        <button class="qcard" type="button" data-jump="legal" style="--accent:#6946A5;--soft:#F5F0FF"><span class="qnum">03</span><span class="qname">Legal</span><span class="qarrow">→</span></button>
+        <button class="qcard" type="button" data-jump="marca" style="--accent:#C7447B;--soft:#FFF0F7"><span class="qnum">04</span><span class="qname">Marca & Lorenita</span><span class="qarrow">→</span></button>
+        <button class="qcard" type="button" data-jump="marketing" style="--accent:#319656;--soft:#EEF9F1"><span class="qnum">05</span><span class="qname">Marketing</span><span class="qarrow">→</span></button>
+        <button class="qcard" type="button" data-jump="redes" style="--accent:#168B91;--soft:#ECFAFA"><span class="qnum">06</span><span class="qname">Redes & Plataformas</span><span class="qarrow">→</span></button>
+      </div>
+    </section>
+
+    <section class="section" id="s-libro" data-section="libro" style="--section:#E44B31;--sectionsoft:#FFF1ED">
+      <div class="section-title-row"><div><span class="ptag">Libro</span><h1>El Libro</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/libro" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-libro"></div><div class="empty-state" id="empty-libro">0 archivos</div><div class="error-state" id="error-libro">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+    <section class="section" id="s-impresion" data-section="impresion" style="--section:#C79612;--sectionsoft:#FFF8DF">
+      <div class="section-title-row"><div><span class="ptag">Impresión</span><h1>Impresión</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/impresion" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-impresion"></div><div class="empty-state" id="empty-impresion">0 archivos</div><div class="error-state" id="error-impresion">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+    <section class="section" id="s-legal" data-section="legal" style="--section:#6946A5;--sectionsoft:#F5F0FF">
+      <div class="section-title-row"><div><span class="ptag">Legal</span><h1>Legal</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/legal" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-legal"></div><div class="empty-state" id="empty-legal">0 archivos</div><div class="error-state" id="error-legal">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+    <section class="section" id="s-marca" data-section="marca" style="--section:#C7447B;--sectionsoft:#FFF0F7">
+      <div class="section-title-row"><div><span class="ptag">Marca</span><h1>Marca & Lorenita</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marca" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-marca"></div><div class="empty-state" id="empty-marca">0 archivos</div><div class="error-state" id="error-marca">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+    <section class="section" id="s-marketing" data-section="marketing" style="--section:#319656;--sectionsoft:#EEF9F1">
+      <div class="section-title-row"><div><span class="ptag">Marketing</span><h1>Marketing</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/marketing" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-marketing"></div><div class="empty-state" id="empty-marketing">0 archivos</div><div class="error-state" id="error-marketing">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+    <section class="section" id="s-redes" data-section="redes" style="--section:#168B91;--sectionsoft:#ECFAFA">
+      <div class="section-title-row"><div><span class="ptag">Redes</span><h1>Redes & Plataformas</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/redes" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
+      <div class="asset-grid" id="assets-redes"></div><div class="empty-state" id="empty-redes">0 archivos</div><div class="error-state" id="error-redes">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    const PIN_HASH='7a99d42d79e9bafeaa5ccedaf0135267da4ccd197a99131a8cf15025cb54ab18';
+    const AUTH_KEY='globologia-hq-auth-until';
+    const AUTH_DAYS=30;
+    let appStarted=false;
+
+    function getAuthUntil(){try{return Number(localStorage.getItem(AUTH_KEY)||0);}catch(e){return 0;}}
+    function saveAuth(){try{localStorage.setItem(AUTH_KEY,String(Date.now()+AUTH_DAYS*24*60*60*1000));}catch(e){}}
+    function clearAuth(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
+    function isAuthorized(){return getAuthUntil()>Date.now();}
+    async function sha256(value){
+      const bytes=new TextEncoder().encode(value);
+      const digest=await crypto.subtle.digest('SHA-256',bytes);
+      return Array.from(new Uint8Array(digest)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+    }
+    function unlockHQ(remember){
+      if(remember)saveAuth();
+      document.body.classList.remove('locked');
+      document.getElementById('pin-error').textContent='';
+      if(!appStarted)initApp();
+    }
+    async function verifyPin(pin){
+      if(!/^\d{4}$/.test(pin))return false;
+      try{return (await sha256(pin))===PIN_HASH;}catch(e){console.error('PIN verification unavailable',e);return false;}
+    }
+    async function submitPin(event){
+      event.preventDefault();
+      const input=document.getElementById('pin-input');
+      const panel=document.getElementById('pin-panel');
+      const error=document.getElementById('pin-error');
+      const pin=input.value.replace(/\D/g,'').slice(0,4);
+      input.value=pin;
+      if(await verifyPin(pin)){unlockHQ(true);input.value='';return;}
+      error.textContent='PIN incorrecto.';
+      panel.classList.remove('shake');void panel.offsetWidth;panel.classList.add('shake');
+      input.select();
+    }
+
+    const GH_OWNER='globologia';
+    const GH_REPO='globologia-hq';
+    const GH_BRANCH='main';
+    const SECTION_NAMES={libro:'El Libro',impresion:'Impresión',legal:'Legal',marca:'Marca & Lorenita',marketing:'Marketing',redes:'Redes & Plataformas'};
+    const SECTION_COLORS={libro:'#E44B31',impresion:'#C79612',legal:'#6946A5',marca:'#C7447B',marketing:'#319656',redes:'#168B91'};
+    const SECTION_SOFT={libro:'#FFF1ED',impresion:'#FFF8DF',legal:'#F5F0FF',marca:'#FFF0F7',marketing:'#EEF9F1',redes:'#ECFAFA'};
+    let remoteAssets=[];
+    let loadFailed=false;
+
+    function encodePath(path){return path.split('/').map(encodeURIComponent).join('/');}
+    function rawUrl(path){return 'https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/'+GH_BRANCH+'/'+encodePath(path);}
+    function githubViewUrl(path){return 'https://github.com/'+GH_OWNER+'/'+GH_REPO+'/blob/'+GH_BRANCH+'/'+encodePath(path);}
+    function extFromPath(path){const m=path.match(/\.([^.\/]+)$/);return m?m[1].toLowerCase():'file';}
+    function displayNameFromPath(path){return path.split('/').pop().replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();}
+    function isImage(ext){return ['png','jpg','jpeg','webp','gif','svg','avif'].indexOf(ext)!==-1;}
+    function canOpenRaw(ext){return isImage(ext)||ext==='pdf'||ext==='txt';}
+    function normalizeText(s){
+      s=(s||'').toLowerCase();
+      try{return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){return s;}
+    }
+
+    function go(id){
+      document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+      document.querySelectorAll('.nbtn').forEach(function(b){b.classList.remove('on');});
+      const sec=document.getElementById('s-'+id);
+      if(sec)sec.classList.add('active');
+      const tab=document.querySelector('.nbtn[data-tab="'+id+'"]');
+      if(tab)tab.classList.add('on');
+      const next=id==='inicio'?location.pathname:'#'+id;
+      try{history.replaceState(null,'',next);}catch(e){}
+      window.scrollTo({top:0,behavior:'smooth'});
+      updateStates();
+      closeSearch();
+    }
+
+    function closeSearch(){const box=document.getElementById('search-results');box.classList.remove('show');box.innerHTML='';}
+    function clearSearch(){const input=document.getElementById('search-input');input.value='';document.getElementById('search-clear').style.display='none';closeSearch();input.focus();}
+
+    function searchItems(){
+      const sections=Object.keys(SECTION_NAMES).map(function(section){return {section:section,label:SECTION_NAMES[section],type:'Sección'};});
+      const files=remoteAssets.map(function(a){return {section:a.section,label:a.displayName,type:a.ext.toUpperCase()};});
+      return sections.concat(files);
+    }
+
+    function doSearch(query){
+      const q=normalizeText((query||'').trim());
+      const box=document.getElementById('search-results');
+      document.getElementById('search-clear').style.display=q?'block':'none';
+      if(!q){closeSearch();return;}
+      const matches=searchItems().filter(function(item){return normalizeText(item.label+' '+item.type+' '+SECTION_NAMES[item.section]).indexOf(q)!==-1;}).slice(0,30);
+      box.innerHTML='';
+      if(!matches.length){const empty=document.createElement('div');empty.className='sr-empty';empty.textContent='Sin resultados';box.appendChild(empty);}else{
+        matches.forEach(function(item){
+          const btn=document.createElement('button');btn.type='button';btn.className='sr-item';btn.style.setProperty('--accent',SECTION_COLORS[item.section]);btn.dataset.section=item.section;
+          const tab=document.createElement('span');tab.className='sr-tab';tab.textContent=SECTION_NAMES[item.section];
+          const label=document.createElement('span');label.className='sr-label';label.textContent=item.label;
+          const meta=document.createElement('span');meta.className='sr-meta';meta.textContent=item.type;
+          btn.append(tab,label,meta);box.appendChild(btn);
+        });
+      }
+      box.classList.add('show');
+    }
+
+    async function loadGithubAssets(){
+      loadFailed=false;updateStates();
+      try{
+        const url='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/git/trees/'+GH_BRANCH+'?recursive=1';
+        const response=await fetch(url,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});
+        if(!response.ok)throw new Error('GitHub API '+response.status);
+        const data=await response.json();
+        remoteAssets=(data.tree||[]).filter(function(x){return x.type==='blob'&&x.path.indexOf('assets/')===0;}).filter(function(x){return !/(^|\/)\.gitkeep$|(^|\/)README/i.test(x.path);}).map(function(x){
+          const parts=x.path.split('/');const section=parts[1];if(!SECTION_NAMES[section])return null;
+          return {section:section,path:x.path,ext:extFromPath(x.path),displayName:displayNameFromPath(x.path)};
+        }).filter(Boolean);
+        renderRemoteAssets();
+      }catch(err){
+        console.error(err);remoteAssets=[];loadFailed=true;clearRemoteAssets();updateStates();
+      }
+    }
+
+    function clearRemoteAssets(){document.querySelectorAll('.remote-asset').forEach(function(el){el.remove();});}
+
+    function renderRemoteAssets(){
+      clearRemoteAssets();
+      remoteAssets.forEach(function(asset){
+        const grid=document.getElementById('assets-'+asset.section);if(!grid)return;
+        const raw=rawUrl(asset.path);const view=githubViewUrl(asset.path);
+        const card=document.createElement('article');card.className='asset-card remote-asset';card.style.setProperty('--section',SECTION_COLORS[asset.section]);card.style.setProperty('--sectionsoft',SECTION_SOFT[asset.section]);
+
+        const preview=document.createElement('a');preview.className='file-preview';preview.target='_blank';preview.rel='noopener noreferrer';preview.href=canOpenRaw(asset.ext)?raw:view;
+        if(isImage(asset.ext)){
+          preview.classList.add('image-preview');const img=document.createElement('img');img.src=raw;img.alt=asset.displayName;img.loading='lazy';img.decoding='async';preview.appendChild(img);
+        }else{
+          const badge=document.createElement('span');badge.className='file-badge';badge.textContent=asset.ext.toUpperCase();preview.appendChild(badge);
+        }
+
+        const info=document.createElement('div');info.className='asset-info';
+        const copy=document.createElement('div');copy.className='asset-copy';
+        const type=document.createElement('span');type.className='file-type';type.textContent=asset.ext.toUpperCase();
+        const title=document.createElement('strong');title.textContent=asset.displayName;copy.append(type,title);
+        const actions=document.createElement('div');actions.className='asset-actions';
+        const open=document.createElement('a');open.className='open-btn';open.target='_blank';open.rel='noopener noreferrer';open.href=canOpenRaw(asset.ext)?raw:view;open.textContent='Abrir';
+        const download=document.createElement('button');download.type='button';download.className='grab-btn';download.textContent='Descargar';download.dataset.url=raw;download.dataset.filename=asset.path.split('/').pop();
+        actions.append(open,download);info.append(copy,actions);card.append(preview,info);grid.appendChild(card);
+      });
+      updateStates();
+    }
+
+    async function downloadAsset(button){
+      const url=button.dataset.url;const filename=button.dataset.filename||'archivo';
+      button.disabled=true;
+      try{
+        const response=await fetch(url);if(!response.ok)throw new Error('Download '+response.status);
+        const blob=await response.blob();const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(objectUrl);},1000);
+      }catch(err){window.open(url,'_blank','noopener');}
+      finally{button.disabled=false;}
+    }
+
+    function updateStates(){
+      Object.keys(SECTION_NAMES).forEach(function(id){
+        const grid=document.getElementById('assets-'+id);const empty=document.getElementById('empty-'+id);const error=document.getElementById('error-'+id);if(!grid||!empty||!error)return;
+        const count=grid.querySelectorAll('.asset-card').length;empty.style.display=!loadFailed&&count===0?'block':'none';error.style.display=loadFailed?'block':'none';
+      });
+    }
+
+    document.addEventListener('click',function(event){
+      const nav=event.target.closest('.nbtn');if(nav){go(nav.dataset.tab);return;}
+      const jump=event.target.closest('[data-jump]');if(jump){go(jump.dataset.jump);return;}
+      const result=event.target.closest('.sr-item');if(result){go(result.dataset.section);return;}
+      const download=event.target.closest('.grab-btn');if(download){downloadAsset(download);return;}
+      const retry=event.target.closest('.retry-btn');if(retry){loadGithubAssets();return;}
+      const wrap=document.getElementById('searchbar-wrap');if(wrap&&!wrap.contains(event.target))closeSearch();
+    });
+
+    document.getElementById('search-input').addEventListener('input',function(){doSearch(this.value);});
+    document.getElementById('search-input').addEventListener('focus',function(){doSearch(this.value);});
+    document.getElementById('search-clear').addEventListener('click',clearSearch);
+
+    function initApp(){
+      if(appStarted)return;appStarted=true;
+      const hash=location.hash.replace('#','');go(hash&&SECTION_NAMES[hash]?hash:'inicio');loadGithubAssets();
+      if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){navigator.serviceWorker.register('./service-worker.js').catch(function(err){console.warn('SW',err);});}
+    }
+
+    document.getElementById('pin-form').addEventListener('submit',submitPin);
+    document.getElementById('pin-input').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,4);document.getElementById('pin-error').textContent='';});
+
+    window.addEventListener('load',function(){
+      if(isAuthorized()){unlockHQ(false);}else{clearAuth();document.getElementById('pin-input').focus();}
+    });
+  </script>
 </body>
 </html>
