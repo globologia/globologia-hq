@@ -1,4 +1,4 @@
-const CACHE='globologia-hq-v7';
+const CACHE='globologia-hq-v8';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 
 self.addEventListener('install',event=>{

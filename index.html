@@ -89,6 +89,14 @@
     .error-state{border-style:solid;color:#7A3E3E;background:#FFF7F7}
     .retry-btn{margin-top:12px;border:1px solid #B75B5B;border-radius:10px;background:#fff;color:#8A3F3F;font-family:'Inter',Arial,sans-serif;font-weight:800;padding:8px 12px;cursor:pointer}
 
+    .book-levels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:620px;margin:0 auto}
+    .book-level-btn{min-height:112px;border:1px solid #F0C7BE;border-radius:18px;background:#FFF7F4;color:#B63823;font-family:'Inter',Arial,sans-serif;font-size:1.35rem;font-weight:900;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;box-shadow:0 5px 15px rgba(228,75,49,.06);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+    .book-level-btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(228,75,49,.10);border-color:#E99B8B}
+    .book-level-btn:focus-visible{outline:3px solid rgba(228,75,49,.2);outline-offset:2px}
+    .book-assets-view{display:none}
+    .book-assets-view.show{display:block}
+    .book-back{border:1px solid var(--section);border-radius:12px;background:#fff;color:var(--section);font-family:'Inter',Arial,sans-serif;font-size:.72rem;font-weight:900;padding:10px 14px;cursor:pointer;min-height:42px}
+
     @media (max-width:559px){
       #brandbar{padding-top:8px}
       #searchbar-row,#topbar-inner,#page{padding-left:11px;padding-right:11px}
@@ -98,6 +106,8 @@
       .asset-info{align-items:flex-start}
       .asset-actions{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;flex:1 1 100%}
       .asset-actions>*{width:100%}
+      .book-levels{grid-template-columns:1fr}
+      .book-level-btn{min-height:88px}
     }
     @media (max-width:360px){
       .asset-actions{grid-template-columns:1fr}
@@ -173,8 +183,19 @@
     </section>
 
     <section class="section" id="s-libro" data-section="libro" style="--section:#E44B31;--sectionsoft:#FFF1ED">
-      <div class="section-title-row"><div><span class="ptag">Libro</span><h1>El Libro</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/libro" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
-      <div class="asset-grid" id="assets-libro"></div><div class="empty-state" id="empty-libro">0 archivos</div><div class="error-state" id="error-libro">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+      <div id="book-levels-view">
+        <div class="section-title-row"><div><span class="ptag">Libro</span><h1>El Libro</h1></div></div>
+        <div class="book-levels" aria-label="Secciones del libro">
+          <a class="book-level-btn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">1000</a>
+          <a class="book-level-btn" href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">2000</a>
+          <a class="book-level-btn" href="https://www.canva.com/design/DAHKQjpN6-g/dcDCg_EQqlPLSlWzdGyW9g/edit" target="_blank" rel="noopener noreferrer">3000</a>
+          <button class="book-level-btn" id="book-open-4000" type="button">4000</button>
+        </div>
+      </div>
+      <div class="book-assets-view" id="book-assets-view">
+        <div class="section-title-row"><div><span class="ptag">Libro</span><h1>4000</h1></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="book-back" id="book-back" type="button">← Libro</button><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/libro" target="_blank" rel="noopener noreferrer">+ Subir</a></div></div>
+        <div class="asset-grid" id="assets-libro"></div><div class="empty-state" id="empty-libro">0 archivos</div><div class="error-state" id="error-libro">No se pudieron cargar los archivos.<br><button class="retry-btn" type="button">Reintentar</button></div>
+      </div>
     </section>
     <section class="section" id="s-impresion" data-section="impresion" style="--section:#C79612;--sectionsoft:#FFF8DF">
       <div class="section-title-row"><div><span class="ptag">Impresión</span><h1>Impresión</h1></div><a class="upload-btn" href="https://github.com/globologia/globologia-hq/upload/main/assets/impresion" target="_blank" rel="noopener noreferrer">+ Subir</a></div>
@@ -262,6 +283,7 @@
       document.querySelectorAll('.nbtn').forEach(function(b){b.classList.remove('on');});
       const sec=document.getElementById('s-'+id);
       if(sec)sec.classList.add('active');
+      if(id==='libro')showBookAssets(false);
       const tab=document.querySelector('.nbtn[data-tab="'+id+'"]');
       if(tab)tab.classList.add('on');
       const next=id==='inicio'?location.pathname:'#'+id;
@@ -269,6 +291,15 @@
       window.scrollTo({top:0,behavior:'smooth'});
       updateStates();
       closeSearch();
+    }
+
+    function showBookAssets(show){
+      const levels=document.getElementById('book-levels-view');
+      const assets=document.getElementById('book-assets-view');
+      if(!levels||!assets)return;
+      levels.style.display=show?'none':'block';
+      assets.classList.toggle('show',!!show);
+      window.scrollTo({top:0,behavior:'smooth'});
     }
 
     function closeSearch(){const box=document.getElementById('search-results');box.classList.remove('show');box.innerHTML='';}
@@ -399,6 +430,8 @@
       const result=event.target.closest('.sr-item');if(result){go(result.dataset.section);return;}
       const save=event.target.closest('.grab-btn');if(save){saveAsset(save);return;}
       const retry=event.target.closest('.retry-btn');if(retry){loadGithubAssets();return;}
+      if(event.target.closest('#book-open-4000')){showBookAssets(true);return;}
+      if(event.target.closest('#book-back')){showBookAssets(false);return;}
       const wrap=document.getElementById('searchbar-wrap');if(wrap&&!wrap.contains(event.target))closeSearch();
     });
 
